@@ -48,9 +48,31 @@ class TestNDCG(unittest.TestCase):
         self.assertAlmostEqual(11.0, ndcg.cum_gain([3, 1, 0, 3, 2, 2]))
 
 
+    def test_idcg_none(self):
+        # from wikipedia
+        self.assertAlmostEqual(0.0, ndcg.idcg([], False))
+        self.assertAlmostEqual(0.0, ndcg.idcg(np.asarray([]), False))
+        self.assertAlmostEqual(0.0, ndcg.idcg(None, False))
+
+
+    def test_idcg_zeros(self):
+        self.assertAlmostEqual(0.0, ndcg.idcg([0, 0, 0, 0], False))
+
+
     def test_idcg(self):
         # from wikipedia
         self.assertAlmostEqual(8.6925361, ndcg.idcg([3, 2, 3, 0, 1, 2], False))
+
+
+    def test_ndcg_none(self):
+        # from wikipedia
+        self.assertAlmostEqual(0.0, ndcg.ndcg([], False))
+        self.assertAlmostEqual(0.0, ndcg.ndcg(np.asarray([]), False))
+        self.assertAlmostEqual(0.0, ndcg.ndcg(None, False))
+
+
+    def test_ndcg_zeros(self):
+        self.assertAlmostEqual(0.0, ndcg.ndcg([0, 0, 0, 0], False))
 
 
     def test_ndcg(self):

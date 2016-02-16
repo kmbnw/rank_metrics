@@ -75,6 +75,10 @@ def idcg(relevance, alternate=True):
     place more emphasis on relevant results).
     @type alternate: C{bool}
     """
+
+    if relevance is None or len(relevance) < 1:
+        return 0.0
+
     rel = np.asarray(relevance)
     rel.sort()
     return dcg(rel[::-1], alternate)
@@ -90,4 +94,8 @@ def ndcg(relevance, alternate=True):
     place more emphasis on relevant results).
     @type alternate: C{bool}
     """
-    return dcg(relevance, alternate) / idcg(relevance, alternate)
+    ideal_dcg = idcg(relevance, alternate)
+    if ideal_dcg == 0:
+        return 0.0
+
+    return dcg(relevance, alternate) / ideal_dcg
