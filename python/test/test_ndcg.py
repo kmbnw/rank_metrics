@@ -48,5 +48,16 @@ class TestNDCG(unittest.TestCase):
         self.assertAlmostEqual(11.0, ndcg.cum_gain([3, 1, 0, 3, 2, 2]))
 
 
+    def test_idcg(self):
+        # from wikipedia
+        self.assertAlmostEqual(8.6925361, ndcg.idcg([3, 2, 3, 0, 1, 2], False))
+
+
+    def test_ndcg(self):
+        # from wikipedia
+        self.assertAlmostEqual(0.9315085, ndcg.ndcg([3, 2, 3, 0, 1, 2], False))
+
+
+
 if __name__ == '__main__':
     unittest.main()

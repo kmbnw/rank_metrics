@@ -8,10 +8,10 @@ Ben Hamner has a great metrics repo already at https://github.com/benhamner/Metr
 if you need more than ranking evaluation (although it also has ranking metrics).
 
 Fully implemented:
- * Nothing
+ * DCG and NDCG (https://en.wikipedia.org/wiki/Discounted_cumulative_gain)
  
 In progress:
- * DCG and NDCG (https://en.wikipedia.org/wiki/Discounted_cumulative_gain)
+ * Cumulative NDCG and DCG @ position X
 
 
 If you see something that could be better, I always appreciate a pull request :).

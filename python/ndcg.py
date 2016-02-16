@@ -38,6 +38,15 @@ def cum_gain(relevance):
 
 
 def dcg(relevance, alternate=True):
+    """
+    Calculate discounted cumulative gain.
+
+    @param relevance: Graded and ordered relevances of the results.
+    @type relevance: C{seq} or C{numpy.array}
+    @param alternate: True to use the alternate scoring (intended to
+    place more emphasis on relevant results).
+    @type alternate: C{bool}
+    """
 
     if relevance is None or len(relevance) < 1:
         return 0.0
@@ -54,3 +63,31 @@ def dcg(relevance, alternate=True):
     else:
         log2i = np.log2(range(2, p + 1))
         return rel[0] + (rel[1:] / log2i).sum()
+
+
+def idcg(relevance, alternate=True):
+    """
+    Calculate ideal discounted cumulative gain (maximum possible DCG).
+
+    @param relevance: Graded and ordered relevances of the results.
+    @type relevance: C{seq} or C{numpy.array}
+    @param alternate: True to use the alternate scoring (intended to
+    place more emphasis on relevant results).
+    @type alternate: C{bool}
+    """
+    rel = np.asarray(relevance)
+    rel.sort()
+    return dcg(rel[::-1], alternate)
+
+
+def ndcg(relevance, alternate=True):
+    """
+    Calculate normalized discounted cumulative gain.
+
+    @param relevance: Graded and ordered relevances of the results.
+    @type relevance: C{seq} or C{numpy.array}
+    @param alternate: True to use the alternate scoring (intended to
+    place more emphasis on relevant results).
+    @type alternate: C{bool}
+    """
+    return dcg(relevance, alternate) / idcg(relevance, alternate)
