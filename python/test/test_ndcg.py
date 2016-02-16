@@ -18,13 +18,13 @@ import numpy as np
 
 class TestNDCG(unittest.TestCase):
 
-    def xtest_dcg_none(self):
+    def test_dcg_none(self):
         self.assertAlmostEqual(0.0, ndcg.dcg(None))
         self.assertAlmostEqual(0.0, ndcg.dcg([]))
         self.assertAlmostEqual(0.0, ndcg.dcg(np.asarray([])))
 
 
-    def xtest_dcg_zeros(self):
+    def test_dcg_zeros(self):
         self.assertAlmostEqual(0.0, ndcg.dcg([0, 0, 0, 0]))
         self.assertAlmostEqual(0.0, ndcg.dcg([0, 0, 0, 0], False))
 
@@ -34,6 +34,13 @@ class TestNDCG(unittest.TestCase):
         self.assertAlmostEqual(18.4922829, ndcg.dcg([8, 9, 1, 0, 2], False))
         self.assertAlmostEqual(2.0616063, ndcg.dcg([1, 1, 0, 1]))
         self.assertAlmostEqual(579.0656625, ndcg.dcg([8, 9, 1, 0, 2]))
+
+
+    def test_cum_gain(self):
+        # from wikipedia
+        self.assertAlmostEqual(11.0, ndcg.cum_gain([3, 2, 3, 0, 1, 2]))
+        # order is irrelevant
+        self.assertAlmostEqual(11.0, ndcg.cum_gain([3, 1, 0, 3, 2, 2]))
 
 
 if __name__ == '__main__':
