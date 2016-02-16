@@ -32,6 +32,11 @@ class TestNDCG(unittest.TestCase):
     def test_dcg(self):
         self.assertAlmostEqual(2.5, ndcg.dcg([1, 1, 0, 1], False))
         self.assertAlmostEqual(18.4922829, ndcg.dcg([8, 9, 1, 0, 2], False))
+        # from wikipedia
+        self.assertAlmostEqual(8.0971714, ndcg.dcg([3, 2, 3, 0, 1, 2], False))
+
+
+    def test_dcg_alternate(self):
         self.assertAlmostEqual(2.0616063, ndcg.dcg([1, 1, 0, 1]))
         self.assertAlmostEqual(579.0656625, ndcg.dcg([8, 9, 1, 0, 2]))
 
