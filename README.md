@@ -7,8 +7,8 @@ with minimal license limitations (Apache V2).
 Ben Hamner has a great metrics repo already at https://github.com/benhamner/Metrics, which is worth looking at
 if you need more than ranking evaluation (although it also has ranking metrics).
 
-Fully implemented:
- * DCG and NDCG (https://en.wikipedia.org/wiki/Discounted_cumulative_gain)
+Implemented:
+ * DCG and NDCG (https://en.wikipedia.org/wiki/Discounted_cumulative_gain) in Python
  
 In progress:
  * Cumulative NDCG and DCG @ position X
