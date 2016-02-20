@@ -106,8 +106,12 @@ def ndcg(relevance, nranks, alternate=True):
         raise Exception('nranks < 1')
 
     rel = np.asarray(relevance)
-    buf = max(0, nranks - len(rel))
-    rel = np.pad(rel, (0, buf), 'constant')
+    pad = max(0, nranks - len(rel))
+
+    # pad could be zero in which case this will no-op
+    rel = np.pad(rel, (0, pad), 'constant')
+
+    # now slice downto nranks
     rel = rel[0:min(nranks, len(rel))]
 
     ideal_dcg = idcg(rel, alternate)
