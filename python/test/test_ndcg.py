@@ -62,22 +62,28 @@ class TestNDCG(unittest.TestCase):
     def test_idcg(self):
         # from wikipedia
         self.assertAlmostEqual(8.6925361, ndcg.idcg([3, 2, 3, 0, 1, 2], False))
+        # order is irrelevant
+        self.assertAlmostEqual(8.6925361, ndcg.idcg([3, 2, 3, 0, 1, 2], False))
 
 
     def test_ndcg_none(self):
         # from wikipedia
-        self.assertAlmostEqual(0.0, ndcg.ndcg([], False))
-        self.assertAlmostEqual(0.0, ndcg.ndcg(np.asarray([]), False))
-        self.assertAlmostEqual(0.0, ndcg.ndcg(None, False))
+        self.assertAlmostEqual(0.0, ndcg.ndcg([], 0, False))
+        self.assertAlmostEqual(0.0, ndcg.ndcg(np.asarray([]), 0, False))
+        self.assertAlmostEqual(0.0, ndcg.ndcg(None, 0, False))
 
 
     def test_ndcg_zeros(self):
-        self.assertAlmostEqual(0.0, ndcg.ndcg([0, 0, 0, 0], False))
+        self.assertAlmostEqual(0.0, ndcg.ndcg([0, 0, 0, 0], 6, False))
 
 
     def test_ndcg(self):
         # from wikipedia
-        self.assertAlmostEqual(0.9315085, ndcg.ndcg([3, 2, 3, 0, 1, 2], False))
+        self.assertAlmostEqual(0.9315085, ndcg.ndcg([3, 2, 3, 0, 1, 2], 6, False))
+
+    def test_ndcg_nranks(self):
+        self.assertAlmostEqual(0.9491769, ndcg.ndcg([3, 2, 3, 0], 4, False))
+        self.assertAlmostEqual(0.9491769, ndcg.ndcg([3, 2, 3], 4, False))
 
 
 

@@ -79,23 +79,39 @@ def idcg(relevance, alternate=True):
     if relevance is None or len(relevance) < 1:
         return 0.0
 
-    rel = np.asarray(relevance)
+    # guard copy before sort
+    rel = np.asarray(relevance).copy()
     rel.sort()
     return dcg(rel[::-1], alternate)
 
 
-def ndcg(relevance, alternate=True):
+def ndcg(relevance, nranks, alternate=True):
     """
     Calculate normalized discounted cumulative gain.
 
     @param relevance: Graded and ordered relevances of the results.
     @type relevance: C{seq} or C{numpy.array}
+    @param nranks: Number of ranks to use when calculating NDCG.
+    Will be used to rightpad with zeros if len(relevance) is less
+    than nranks
+    @type nranks: C{int}
     @param alternate: True to use the alternate scoring (intended to
     place more emphasis on relevant results).
     @type alternate: C{bool}
     """
-    ideal_dcg = idcg(relevance, alternate)
+    if relevance is None or len(relevance) < 1:
+        return 0.0
+
+    if (nranks < 1):
+        raise Exception('nranks < 1')
+
+    rel = np.asarray(relevance)
+    buf = max(0, nranks - len(rel))
+    rel = np.pad(rel, (0, buf), 'constant')
+    rel = rel[0:min(nranks, len(rel))]
+
+    ideal_dcg = idcg(rel, alternate)
     if ideal_dcg == 0:
         return 0.0
 
-    return dcg(relevance, alternate) / ideal_dcg
+    return dcg(rel, alternate) / ideal_dcg
