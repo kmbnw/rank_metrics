@@ -86,6 +86,23 @@ class TestNDCG(unittest.TestCase):
         self.assertAlmostEqual(0.9491769, ndcg.ndcg([3, 2, 3], 4, False))
 
 
+    def test_param_stomping(self):
+        testval_init = np.asarray([3, 2, 3, 0])
+        testval = np.asarray([3, 2, 3, 0])
+
+        x = ndcg.ndcg(testval, 4, False)
+        self.assertEqual(testval_init.tolist(), testval.tolist())
+
+        x = ndcg.idcg(testval, False)
+        self.assertEqual(testval_init.tolist(), testval.tolist())
+
+        x = ndcg.dcg(testval, False)
+        self.assertEqual(testval_init.tolist(), testval.tolist())
+
+        x = ndcg.cum_gain(testval)
+        self.assertEqual(testval_init.tolist(), testval.tolist())
+
+
 
 if __name__ == '__main__':
     unittest.main()
