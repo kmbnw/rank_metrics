@@ -8,7 +8,7 @@ Ben Hamner has a great metrics repo already at https://github.com/benhamner/Metr
 if you need more than ranking evaluation (although it also has ranking metrics).
 
 Implemented:
- * DCG and NDCG (https://en.wikipedia.org/wiki/Discounted_cumulative_gain) in Python
+ * DCG and NDCG @ rank X (https://en.wikipedia.org/wiki/Discounted_cumulative_gain) in Python
  
 In progress:
  * Cumulative NDCG and DCG @ position X
