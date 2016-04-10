@@ -42,7 +42,7 @@ contains
 !    @param relevance: Graded and ordered relevances of the results.
 !    @param alternate: True to use the alternate scoring (intended to
 !    place more emphasis on relevant results).
-    double precision function dcg(relevance, alternate)
+    pure double precision function dcg(relevance, alternate)
         double precision, intent(in), dimension(:) :: relevance
         logical, intent(in) :: alternate
         double precision, dimension(size(relevance)) :: log2i_alt
