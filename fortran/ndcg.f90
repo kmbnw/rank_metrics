@@ -19,10 +19,10 @@ contains
     ! This ignores the position of a result, but may still be generally useful.
 
     ! @param relevance: Graded relevances of the results.
-    pure real function cum_gain(relevance)
-        real, intent(in), dimension(:) :: relevance
+    pure double precision function cum_gain(relevance)
+        double precision, intent(in), dimension(:) :: relevance
 
-        cum_gain = 0.0
+        cum_gain = 0.0D0
         if (size(relevance) < 1) then
             return
         end if
@@ -32,9 +32,9 @@ contains
 
     pure function log2(x)
         ! I am mildly surprised Fortran does not have this
-        real, intent(in), dimension(:) :: x
-        real, dimension(size(x)) :: log2
-        log2 = log(x) / log(2.0)
+        double precision, intent(in), dimension(:) :: x
+        double precision, dimension(size(x)) :: log2
+        log2 = log(x) / log(2.0D0)
     end function
 
 !    Calculate discounted cumulative gain.
@@ -42,10 +42,11 @@ contains
 !    @param relevance: Graded and ordered relevances of the results.
 !    @param alternate: True to use the alternate scoring (intended to
 !    place more emphasis on relevant results).
-    real function dcg(relevance, alternate)
-        real, intent(in), dimension(:) :: relevance
+    double precision function dcg(relevance, alternate)
+        double precision, intent(in), dimension(:) :: relevance
         logical, intent(in) :: alternate
-        real :: log2i
+        double precision, dimension(size(relevance)) :: log2i_alt
+        double precision, dimension(size(relevance) - 1) :: log2i
         ! placeholders
         integer :: i, p
 
@@ -61,11 +62,13 @@ contains
             ! from wikipedia: "An alternative formulation of
             ! DCG[5] places stronger emphasis on retrieving relevant documents"
 
-            !log2i = log2((/(i, i=1, p + 1)/) + 1)
-            !dcg = sum(((2 ** relevance) - 1) / log2i)
+            log2i_alt = log2((/ (i, i=1, p) /) + 1.0D0)
+            dcg = sum(((2 ** relevance) - 1.0) / log2i_alt)
         else
-            !log2i = log2((/(i, i=2, p + 1)/))
-            !dcg = relevance(1) + sum(relevance(2:) / log2i)
+            ! slightly different than wikipedia so I don't have to declare
+            ! two arrays; this one only uses elements 2 onward
+            log2i = log2((/ (i, i=2, p) /) * 1.0D0)
+            dcg = relevance(1) + sum(relevance(2:) / log2i)
         end if
     end function dcg
 
