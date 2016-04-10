@@ -11,16 +11,32 @@
 !    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 !    See the License for the specific language governing permissions and
 !    limitations under the License.
-program test_ndcg
+
+module ndcg_test
 	use rank_ndcg
+contains
+	subroutine assert_cum_gain(relevance, expected)
+		! TODO use an actual unit test framework
+		! sadly most seem to rely on Ruby
+		real, intent(in), dimension(:) :: relevance
+		real, intent(in) :: expected
+		REAL :: actual
 
-	REAL :: j(6)
-	REAL :: cum_gain_j
+		actual = cum_gain(relevance)
 
-	j = (/3, 2, 3, 0, 1, 2/)
-	cum_gain_j = cum_gain(j)
+		! TODO floating point errors in equality
+		if (actual .NE. expected) then
+			write (*,*) '*** Cumulative gain not equal to : ', expected, actual
+		end if
+	end subroutine assert_cum_gain
+end module ndcg_test
 
-	if (cum_gain_j .NE. 11.0) then
-		write (*,*) '*** Cumulative gain not equal to 11.0: ', cum_gain_j
-	end if
+program test_ndcg
+	use ndcg_test
+	implicit none
+
+	call assert_cum_gain((/3.0, 2.0, 3.0, 0.0, 1.0, 2.0/), 11.0)
+	! order should not matter for cumulative gain
+	call assert_cum_gain((/3.0, 3.0, 2.0, 1.0, 0.0, 2.0/), 11.0)
+
 end program test_ndcg
