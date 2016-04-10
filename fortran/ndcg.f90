@@ -30,6 +30,45 @@ contains
         cum_gain = sum(relevance)
     end function cum_gain
 
+    pure function log2(x)
+        ! I am mildly surprised Fortran does not have this
+        real, intent(in), dimension(:) :: x
+        real, dimension(size(x)) :: log2
+        log2 = log(x) / log(2.0)
+    end function
+
+!    Calculate discounted cumulative gain.
+!
+!    @param relevance: Graded and ordered relevances of the results.
+!    @param alternate: True to use the alternate scoring (intended to
+!    place more emphasis on relevant results).
+    real function dcg(relevance, alternate)
+        real, intent(in), dimension(:) :: relevance
+        logical, intent(in) :: alternate
+        real :: log2i
+        ! placeholders
+        integer :: i, p
+
+        dcg = 0.0
+
+        if (size(relevance) < 1) then
+            return
+        end if
+
+        p = size(relevance)
+
+        if (alternate) then
+            ! from wikipedia: "An alternative formulation of
+            ! DCG[5] places stronger emphasis on retrieving relevant documents"
+
+            !log2i = log2((/(i, i=1, p + 1)/) + 1)
+            !dcg = sum(((2 ** relevance) - 1) / log2i)
+        else
+            !log2i = log2((/(i, i=2, p + 1)/))
+            !dcg = relevance(1) + sum(relevance(2:) / log2i)
+        end if
+    end function dcg
+
     !    Calculate normalized discounted cumulative gain.
     !    @param relevance: Graded and ordered relevance array of the results.
     !    @param nranks: Number of ranks to use when calculating NDCG.

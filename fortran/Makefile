@@ -1,4 +1,5 @@
 FC = gfortran
+FFLAGS = -fPIC
 
 all: ndcg.so ndcg.out
 
