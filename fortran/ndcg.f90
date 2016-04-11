@@ -45,8 +45,7 @@ contains
     pure double precision function dcg(relevance, alternate)
         double precision, intent(in), dimension(:) :: relevance
         logical, intent(in) :: alternate
-        double precision, dimension(size(relevance)) :: log2i_alt
-        double precision, dimension(size(relevance) - 1) :: log2i
+        double precision, dimension(size(relevance)) :: log2i
         ! placeholders
         integer :: i, p
 
@@ -62,13 +61,13 @@ contains
             ! from wikipedia: "An alternative formulation of
             ! DCG[5] places stronger emphasis on retrieving relevant documents"
 
-            log2i_alt = log2((/ (i, i=1, p) /) + 1.0D0)
-            dcg = sum(((2 ** relevance) - 1.0) / log2i_alt)
+            log2i = log2((/ (i, i=1, p) /) + 1.0D0)
+            dcg = sum(((2 ** relevance) - 1.0) / log2i)
         else
             ! slightly different than wikipedia so I don't have to declare
             ! two arrays; this one only uses elements 2 onward
-            log2i = log2((/ (i, i=2, p) /) * 1.0D0)
-            dcg = relevance(1) + sum(relevance(2:) / log2i)
+            log2i = log2((/ (i, i=1, p) /) * 1.0D0)
+            dcg = relevance(1) + sum(relevance(2:) / log2i(2:))
         end if
     end function dcg
 
