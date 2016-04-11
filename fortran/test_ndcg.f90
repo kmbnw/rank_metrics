@@ -13,7 +13,7 @@
 !    limitations under the License.
 
 module ndcg_test
-	use rank_ndcg
+	use ranking_ndcg
 
 	! can't use exact equality for floating point, but this should suffice
 	real, parameter :: tol = 1.0E-5
@@ -26,7 +26,7 @@ contains
 		real, intent(in) :: expected
 		real :: actual
 
-		actual = cum_gain(relevance * 1.0D0)
+		actual = rank_cg(relevance * 1.0D0)
 
 		if (abs(actual - expected) > tol) then
 			write (*,*) '*** Cumulative gain not equal to : ', expected, actual
@@ -49,7 +49,7 @@ contains
 		real :: actual
 		logical :: alternate
 
-		actual = dcg(x * 1.0D0, alternate)
+		actual = rank_dcg(x * 1.0D0, alternate)
 		if (abs(actual - expected) > tol) then
 			write (*,*) '*** Discounted cumulative gain not equal to : ', expected, actual
 		end if
