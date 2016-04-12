@@ -23,12 +23,12 @@ contains
 		! TODO use an actual unit test framework
 		! sadly most seem to rely on Ruby
 		integer, intent(in), dimension(:) :: relevance
-		real, intent(in) :: expected
-		real :: actual
+		integer, intent(in) :: expected
+		integer :: actual
 
-		actual = rank_cg(relevance * 1.0D0)
+		actual = rank_cg(relevance)
 
-		if (abs(actual - expected) > tol) then
+		if (actual .NE. expected) then
 			write (*,*) '*** Cumulative gain not equal to : ', expected, actual
 		end if
 	end subroutine assert_cg
@@ -49,7 +49,7 @@ contains
 		real :: actual
 		logical :: alternate
 
-		actual = rank_dcg(x * 1.0D0, alternate)
+		actual = rank_dcg(x, alternate)
 		if (abs(actual - expected) > tol) then
 			write (*,*) '*** Discounted cumulative gain not equal to : ', expected, actual
 		end if
@@ -64,14 +64,14 @@ program test_ndcg
 	integer :: i
 
 	! test cumulative gain for zeros / empty array
-	call assert_cg((/0, 0, 0/), 0.0)
-	call assert_cg((/0, 0, 0/), 0.0)
-	call assert_cg(empty_array, 0.0)
-	call assert_cg(empty_array, 0.0)
+	call assert_cg((/0, 0, 0/), 0)
+	call assert_cg((/0, 0, 0/), 0)
+	call assert_cg(empty_array, 0)
+	call assert_cg(empty_array, 0)
 
-	call assert_cg((/3, 2, 3, 0, 1, 2/), 11.0)
+	call assert_cg((/3, 2, 3, 0, 1, 2/), 11)
 	! order should not matter for cumulative gain
-	call assert_cg((/3, 3, 2, 1, 0, 2/), 11.0)
+	call assert_cg((/3, 3, 2, 1, 0, 2/), 11)
 
 	call assert_log2((/3.0, 4.0, 5.6/), (/1.5849625, 2.0, 2.48542683/))
 	! make sure it works with a do loop constructor

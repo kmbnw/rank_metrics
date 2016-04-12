@@ -20,8 +20,8 @@ contains
     ! This ignores the position of a result, but may still be generally useful.
 
     ! @param relevance: Graded relevances of the results.
-    pure double precision function rank_cg(relevance)
-        double precision, intent(in), dimension(:) :: relevance
+    pure integer function rank_cg(relevance)
+        integer, intent(in), dimension(:) :: relevance
 
         rank_cg = 0.0D0
         if (size(relevance) < 1) then
@@ -38,13 +38,13 @@ contains
         log2 = log(x) / log(2.0D0)
     end function
 
-!    Calculate discounted cumulative gain.
-!
-!    @param relevance: Graded and ordered relevances of the results.
-!    @param alternate: True to use the alternate scoring (intended to
-!    place more emphasis on relevant results).
+    !    Calculate discounted cumulative gain.
+    !
+    !    @param relevance: Graded and ordered relevances of the results.
+    !    @param alternate: True to use the alternate scoring (intended to
+    !    place more emphasis on relevant results).
     pure double precision function rank_dcg(relevance, alternate)
-        double precision, intent(in), dimension(:) :: relevance
+        integer, intent(in), dimension(:) :: relevance
         logical, intent(in) :: alternate
         double precision, dimension(size(relevance)) :: log2i
         ! placeholders
@@ -63,7 +63,7 @@ contains
             ! DCG[5] places stronger emphasis on retrieving relevant documents"
 
             log2i = log2((/ (i, i=1, p) /) + 1.0D0)
-            rank_dcg = sum(((2 ** relevance) - 1.0) / log2i)
+            rank_dcg = sum(((2 ** (1.0D0 * relevance)) - 1.0) / log2i)
         else
             ! slightly different than wikipedia so I don't have to declare
             ! two arrays; this one only uses elements 2 onward
