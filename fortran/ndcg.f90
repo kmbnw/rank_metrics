@@ -37,7 +37,7 @@ contains
     ! @param initval: The padding value to use.
     ! @param len: The length of the returned array.
     ! @returns: A new padded/clamped array as described above.
-    function pad(A, initval, len)
+    pure function pad(A, initval, len)
         integer, intent(in), dimension(:) :: A
         integer, intent(in) :: initval, len
         integer, dimension(max(len, size(A))) :: pad
