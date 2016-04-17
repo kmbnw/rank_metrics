@@ -37,7 +37,7 @@ contains
     ! @param initval: The padding value to use.
     ! @param len: The length of the returned array.
     ! @returns: A new padded/clamped array as described above.
-    pure function pad(A, initval, len)
+    function pad(A, initval, len)
         integer, intent(in), dimension(:) :: A
         integer, intent(in) :: initval, len
         integer, dimension(max(len, size(A))) :: pad
@@ -46,7 +46,7 @@ contains
         pad = initval
 
         ! copy whatever is possible from A
-        do i=1, min(len, size(A))
+        do i=1, size(A)
             pad(i) = A(i)
         end do
     end function pad

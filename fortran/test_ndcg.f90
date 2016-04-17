@@ -29,7 +29,7 @@ contains
 	subroutine assert_same_int(x, xcopy)
 		integer, intent(in), dimension(:) :: x, xcopy
 
-		if (any(x .NE. xcopy)) then
+		if ((size(x) .NE. size(xcopy)) .OR. any(x .NE. xcopy)) then
 			write (*, *) '*** Arrays not equal'
 			write(*, *) x
 			write(*, *) xcopy
@@ -106,6 +106,20 @@ program test_ndcg
 	implicit none
 	integer, dimension(0) :: empty_array
 	integer :: i
+
+	!!! Test pad() !!!
+
+	! pad larger
+	call assert_same_int((/7, 4, 3, 0, 0/), pad((/7, 4, 3/), 0, 5))
+	call assert_same_int((/7, 4, 3, 3, 3/), pad((/7, 4, 3/), 3, 5))
+
+	! pad smaller
+	call assert_same_int((/7, 4, 3/), pad((/7, 4, 3/), 0, 0))
+	call assert_same_int((/99, 43, 3, 0, 1/), pad((/99, 43, 3, 0, 1/), 0, 3))
+	call assert_same_int((/99, 43, 3, 4, 5/), pad((/99, 43, 3, 4, 5/), 5, 3))
+
+	! pad exact
+	call assert_same_int((/99, 43, 3, 0, 1/), pad((/99, 43, 3, 0, 1/), 0, 5))
 
 	!!! Test CG !!!
 
