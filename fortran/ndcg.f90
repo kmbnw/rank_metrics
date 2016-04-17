@@ -30,6 +30,13 @@ contains
         log2 = log(x) / log(2.0)
     end function
 
+    ! Create a new subarray of A with size == len.
+    ! Will be padded with initval if necessary.
+    ! Only the first min(len, size(A)) elements of A will be copied.
+    ! @param A: The array to copy and pad.
+    ! @param initval: The padding value to use.
+    ! @param len: The length of the returned array.
+    ! @returns: A new padded/clamped array as described above.
     pure function pad(A, initval, len)
         integer, intent(in), dimension(:) :: A
         integer, intent(in) :: initval, len
@@ -59,11 +66,11 @@ contains
         rank_cg = sum(relevance)
     end function rank_cg
 
-    !    Calculate discounted cumulative gain.
+    ! Calculate discounted cumulative gain.
     !
-    !    @param relevance: Graded and ordered relevances of the results.
-    !    @param alternate: True to use the alternate scoring (intended to
-    !    place more emphasis on relevant results).
+    ! @param relevance: Graded and ordered relevances of the results.
+    ! @param alternate: True to use the alternate scoring (intended to
+    ! place more emphasis on relevant results).
     pure real function rank_dcg(relevance, alternate)
         integer, intent(in), dimension(:) :: relevance
         logical, intent(in) :: alternate
