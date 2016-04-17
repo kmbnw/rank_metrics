@@ -16,7 +16,34 @@
 module ranking_ndcg
     use qsort
     implicit none
+
+    real, parameter :: tol = 1.0E-5
 contains
+
+    ! Elementwise log base 2 of x.
+    ! @param x: Array to get log base 2 of.
+    ! @return: Log base 2 of input array.
+    pure function log2(x)
+        ! I am mildly surprised Fortran does not have this
+        double precision, intent(in), dimension(:) :: x
+        double precision, dimension(size(x)) :: log2
+        log2 = log(x) / log(2.0D0)
+    end function
+
+    pure function pad(A, initval, len)
+        integer, intent(in), dimension(:) :: A
+        integer, intent(in) :: initval, len
+        integer, dimension(max(len, size(A))) :: pad
+        integer :: i
+
+        pad = initval
+
+        ! copy whatever is possible from A
+        do i=1, min(len, size(A))
+            pad(i) = A(i)
+        end do
+    end function pad
+
     ! Calculate cumulative gain.
     ! This ignores the position of a result, but may still be generally useful.
 
@@ -31,13 +58,6 @@ contains
 
         rank_cg = sum(relevance)
     end function rank_cg
-
-    pure function log2(x)
-        ! I am mildly surprised Fortran does not have this
-        double precision, intent(in), dimension(:) :: x
-        double precision, dimension(size(x)) :: log2
-        log2 = log(x) / log(2.0D0)
-    end function
 
     !    Calculate discounted cumulative gain.
     !
@@ -96,21 +116,35 @@ contains
         rank_idcg = rank_dcg(-1 * rel, alternate)
     end function rank_idcg
 
-    !    Calculate normalized discounted cumulative gain.
+    ! Calculate normalized discounted cumulative gain.
     !
-    !    @param relevance: Graded and ordered relevance array of the results.
-    !    @param nranks: Number of ranks to use when calculating NDCG.
-    !    Will be used to rightpad with zeros if len(relevance) is less
-    !    than nranks
-    pure real function rank_ndcg(relevance, nranks)
-          real, intent(in), dimension(:) :: relevance
+    ! @param relevance: Graded and ordered relevance array of the results.
+    ! @param nranks: Number of ranks to use when calculating NDCG.
+    ! Will be used to rightpad with zeros if len(relevance) is less
+    ! than nranks
+    ! @param alternate: True to use the alternate scoring (intended to
+    ! place more emphasis on relevant results).
+    double precision function rank_ndcg(relevance, nranks, alternate)
+          integer, intent(in), dimension(:) :: relevance
+          logical, intent(in) :: alternate
           integer, intent(in) :: nranks
+          integer, dimension(nranks) :: rel
+          double precision :: ideal_dcg
 
           rank_ndcg = 0.0
 
           if (size(relevance) < 1 .OR. nranks < 1) then
               return
           end if
+
+          rel = pad(relevance, 0, size(rel))
+
+          ideal_dcg = rank_idcg(rel, alternate)
+          if (abs(ideal_dcg - 0) < tol) then
+              return
+          end if
+
+          rank_ndcg = rank_dcg(rel, alternate) / ideal_dcg
 
     end function rank_ndcg
 end module ranking_ndcg
