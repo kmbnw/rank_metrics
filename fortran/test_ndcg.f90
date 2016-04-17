@@ -30,7 +30,9 @@ contains
 		integer, intent(in), dimension(:) :: x, xcopy
 
 		if (any(x .NE. xcopy)) then
-			write (*, *) '*** Arrays not equal', x, xcopy
+			write (*, *) '*** Arrays not equal'
+			write(*, *) x
+			write(*, *) xcopy
 		end if
 	end subroutine assert_same_int
 
