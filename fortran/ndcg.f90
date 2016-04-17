@@ -14,6 +14,7 @@
 
 ! https://en.wikipedia.org/wiki/Discounted_cumulative_gain
 module ranking_ndcg
+    use qsort
     implicit none
 contains
     ! Calculate cumulative gain.
@@ -72,7 +73,31 @@ contains
         end if
     end function rank_dcg
 
+    ! Calculate ideal discounted cumulative gain (maximum possible DCG).
+    !
+    ! @param relevance: Graded and ordered relevances of the results.
+    ! @param alternate: True to use the alternate scoring (intended to
+    ! place more emphasis on relevant results).
+    double precision function rank_idcg(relevance, alternate)
+        integer, intent(in), dimension(:) :: relevance
+        logical, intent(in) :: alternate
+        integer, dimension(size(relevance)) :: rel
+
+        rank_idcg = 0.0
+        if (size(relevance) < 1) then
+            return
+        end if
+
+        ! guard copy before sort, and negate for descending sort
+        rel = -1 * relevance
+        ! sort in descending order
+        call quicksort(rel)
+        ! negate again for proper DCG calculation
+        rank_idcg = rank_dcg(-1 * rel, alternate)
+    end function rank_idcg
+
     !    Calculate normalized discounted cumulative gain.
+    !
     !    @param relevance: Graded and ordered relevance array of the results.
     !    @param nranks: Number of ranks to use when calculating NDCG.
     !    Will be used to rightpad with zeros if len(relevance) is less

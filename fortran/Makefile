@@ -1,14 +1,18 @@
 FC = gfortran
 FFLAGS = -fPIC
 
-all: ndcg.so ndcg.out
+all: ndcg.out
 
-ndcg.so: ndcg.f90
+qsort.o: qsort.f90
+	$(FC) $(FFLAGS) -c qsort.f90
+	$(FC) $(FFLAGS) -shared -o qsort.so qsort.o
+
+ndcg.o: ndcg.f90 qsort.o
 	$(FC) $(FFLAGS) -c ndcg.f90
 	$(FC) $(FFLAGS) -shared -o ndcg.so ndcg.o
 
-ndcg.out: ndcg.o
-	$(FC) $(FFLAGS) test_ndcg.f90 ndcg.o -o test_ndcg.out
+ndcg.out: qsort.o ndcg.o
+	$(FC) $(FFLAGS) test_ndcg.f90 ndcg.o qsort.o -o test_ndcg.out
 
 clean:
 	rm -f *.o

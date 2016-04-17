@@ -55,6 +55,19 @@ contains
 		end if
 
 	end subroutine assert_dcg
+
+	subroutine assert_idcg(x, alternate, expected)
+		integer, intent(in), dimension(:) :: x
+		real, intent(in) :: expected
+		real :: actual
+		logical :: alternate
+
+		actual = rank_idcg(x, alternate)
+		if (abs(actual - expected) > tol) then
+			write (*,*) '*** Ideal discounted cumulative gain not equal to : ', expected, actual
+		end if
+
+	end subroutine assert_idcg
 end module ndcg_test
 
 program test_ndcg
@@ -62,6 +75,8 @@ program test_ndcg
 	implicit none
 	integer, dimension(0) :: empty_array
 	integer :: i
+
+	!!! Test CG !!!
 
 	! test cumulative gain for zeros / empty array
 	call assert_cg((/0, 0, 0/), 0)
@@ -77,11 +92,15 @@ program test_ndcg
 	! make sure it works with a do loop constructor
 	call assert_log2((/ (i, i=2, 5) /) * 1.0, (/1.0 , 1.58496, 2.0, 2.321928/))
 
-	! test DCG for zeros / empty array
-	call assert_dcg((/0, 0, 0/), .TRUE., 0.0)
-	call assert_dcg((/0, 0, 0/), .FALSE., 0.0)
+	!!! Test DCG !!!
+	! empty
 	call assert_dcg(empty_array, .TRUE., 0.0)
 	call assert_dcg(empty_array, .FALSE., 0.0)
+
+	! zeros
+	call assert_dcg((/0, 0, 0/), .TRUE., 0.0)
+	call assert_dcg((/0, 0, 0/), .FALSE., 0.0)
+
 
 	! from wikipedia
 	! standard formulation
@@ -92,5 +111,19 @@ program test_ndcg
 	! check alternate DCG implementation
 	call assert_dcg((/1, 1, 0, 1/), .TRUE., 2.0616063)
 	call assert_dcg((/8, 9, 1, 0, 2 /), .TRUE., 579.0656625)
+
+	!!!! test ideal DCG !!!
+	! empty
+	call assert_idcg(empty_array, .TRUE., 0.0)
+	call assert_idcg(empty_array, .FALSE., 0.0)
+
+	! zeros
+	call assert_idcg((/0, 0, 0, 0/), .TRUE., 0.0)
+    call assert_idcg((/0, 0, 0, 0/), .FALSE., 0.0)
+
+	! from wikipedia
+	! order is irrelevant
+    call assert_idcg((/3, 2, 3, 0, 1, 2/), .FALSE., 8.6925361)
+	call assert_idcg((/3, 2, 0, 3, 2, 1/), .FALSE., 8.6925361)
 
 end program test_ndcg
