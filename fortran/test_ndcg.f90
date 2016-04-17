@@ -16,7 +16,7 @@ module ndcg_test
 	use ranking_ndcg
 contains
 	subroutine assert_almost_equal_r8(expected, actual, name)
-		double precision, intent(in) :: expected, actual
+		real, intent(in) :: expected, actual
 		character(len=*), intent(in) :: name
 
 		if (abs(actual - expected) > tol) then
@@ -50,7 +50,7 @@ contains
 	subroutine assert_log2(x, expected)
 		real, intent(in), dimension(:) :: x, expected
 		real, dimension(size(x)) :: actual
-		actual = log2(x * 1.0D0)
+		actual = log2(x * 1.0)
 
 		if (any(abs(actual - expected) > tol)) then
 			write (*, *) '*** log2 not equal to : ', expected, 'got ', actual
@@ -59,7 +59,7 @@ contains
 
 	subroutine assert_dcg(x, alternate, expected)
 		integer, intent(in), dimension(:) :: x
-		double precision, intent(in) :: expected
+		real, intent(in) :: expected
 		integer, dimension(size(x)) :: xcopy
 		logical :: alternate
 
@@ -71,7 +71,7 @@ contains
 
 	subroutine assert_idcg(x, alternate, expected)
 		integer, intent(in), dimension(:) :: x
-		double precision, intent(in) :: expected
+		real, intent(in) :: expected
 		integer, dimension(size(x)) :: xcopy
 		logical :: alternate
 
@@ -83,9 +83,9 @@ contains
 
 	subroutine assert_ndcg(x, nranks, alternate, expected)
 		integer, intent(in), dimension(:) :: x
-		double precision, intent(in) :: expected
+		real, intent(in) :: expected
 		integer, dimension(size(x)) :: xcopy
-		double precision :: actual
+		real :: actual
 		logical :: alternate
 
 		xcopy = x
@@ -121,61 +121,61 @@ program test_ndcg
 
 	!!! Test DCG !!!
 	! empty
-	call assert_dcg(empty_array, .TRUE., 0.0D0)
-	call assert_dcg(empty_array, .FALSE., 0.0D0)
+	call assert_dcg(empty_array, .TRUE., 0.0)
+	call assert_dcg(empty_array, .FALSE., 0.0)
 
 	! zeros
-	call assert_dcg((/0, 0, 0/), .TRUE., 0.0D0)
-	call assert_dcg((/0, 0, 0/), .FALSE., 0.0D0)
+	call assert_dcg((/0, 0, 0/), .TRUE., 0.0)
+	call assert_dcg((/0, 0, 0/), .FALSE., 0.0)
 
 
 	! from wikipedia
 	! standard formulation
-	call assert_dcg((/1, 1, 0, 1/), .FALSE., 2.5D0)
-	call assert_dcg((/8, 9, 1, 0, 2/), .FALSE., 18.4922829D0)
-	call assert_dcg((/3, 2, 3, 0, 1, 2/), .FALSE., 8.0971714D0)
+	call assert_dcg((/1, 1, 0, 1/), .FALSE., 2.5)
+	call assert_dcg((/8, 9, 1, 0, 2/), .FALSE., 18.4922829)
+	call assert_dcg((/3, 2, 3, 0, 1, 2/), .FALSE., 8.0971714)
 
 	! check alternate DCG implementation
-	call assert_dcg((/1, 1, 0, 1/), .TRUE., 2.0616063D0)
-	call assert_dcg((/8, 9, 1, 0, 2 /), .TRUE., 579.0656625D0)
+	call assert_dcg((/1, 1, 0, 1/), .TRUE., 2.0616063)
+	call assert_dcg((/8, 9, 1, 0, 2 /), .TRUE., 579.0656625)
 
 	!!!! test ideal DCG !!!
 	! empty
-	call assert_idcg(empty_array, .TRUE., 0.0D0)
-	call assert_idcg(empty_array, .FALSE., 0.0D0)
+	call assert_idcg(empty_array, .TRUE., 0.0)
+	call assert_idcg(empty_array, .FALSE., 0.0)
 
 	! zeros
-	call assert_idcg((/0, 0, 0, 0/), .TRUE., 0.0D0)
-    call assert_idcg((/0, 0, 0, 0/), .FALSE., 0.0D0)
+	call assert_idcg((/0, 0, 0, 0/), .TRUE., 0.0)
+    call assert_idcg((/0, 0, 0, 0/), .FALSE., 0.0)
 
 	! from wikipedia
 	! order is irrelevant
-    call assert_idcg((/3, 2, 3, 0, 1, 2/), .FALSE., 8.6925361D0)
-	call assert_idcg((/3, 2, 0, 3, 2, 1/), .FALSE., 8.6925361D0)
+    call assert_idcg((/3, 2, 3, 0, 1, 2/), .FALSE., 8.6925361)
+	call assert_idcg((/3, 2, 0, 3, 2, 1/), .FALSE., 8.6925361)
 
 	!!! test NDCG !!!!
 
     ! zeros
-	call assert_ndcg((/0, 0, 0, 0/), 2, .TRUE., 0.0D0)
-	call assert_ndcg((/0, 0, 0, 0/), 2, .FALSE., 0.0D0)
-	call assert_ndcg((/0, 0, 0, 0/), 4, .TRUE., 0.0D0)
-	call assert_ndcg((/0, 0, 0, 0/), 4, .FALSE., 0.0D0)
-	call assert_ndcg((/0, 0, 0, 0/), 6, .TRUE., 0.0D0)
-	call assert_ndcg((/0, 0, 0, 0/), 6, .FALSE., 0.0D0)
+	call assert_ndcg((/0, 0, 0, 0/), 2, .TRUE., 0.0)
+	call assert_ndcg((/0, 0, 0, 0/), 2, .FALSE., 0.0)
+	call assert_ndcg((/0, 0, 0, 0/), 4, .TRUE., 0.0)
+	call assert_ndcg((/0, 0, 0, 0/), 4, .FALSE., 0.0)
+	call assert_ndcg((/0, 0, 0, 0/), 6, .TRUE., 0.0)
+	call assert_ndcg((/0, 0, 0, 0/), 6, .FALSE., 0.0)
 
 	! empty array
-	call assert_ndcg(empty_array, 2, .TRUE., 0.0D0)
-	call assert_ndcg(empty_array, 2, .FALSE., 0.0D0)
-	call assert_ndcg(empty_array, 4, .TRUE., 0.0D0)
-	call assert_ndcg(empty_array, 4, .FALSE., 0.0D0)
-	call assert_ndcg(empty_array, 6, .TRUE., 0.0D0)
-	call assert_ndcg(empty_array, 6, .FALSE., 0.0D0)
+	call assert_ndcg(empty_array, 2, .TRUE., 0.0)
+	call assert_ndcg(empty_array, 2, .FALSE., 0.0)
+	call assert_ndcg(empty_array, 4, .TRUE., 0.0)
+	call assert_ndcg(empty_array, 4, .FALSE., 0.0)
+	call assert_ndcg(empty_array, 6, .TRUE., 0.0)
+	call assert_ndcg(empty_array, 6, .FALSE., 0.0)
 
     ! from wikipedia
-    call assert_ndcg((/3, 2, 3, 0, 1, 2/), 6, .FALSE., 0.9315085D0)
+    call assert_ndcg((/3, 2, 3, 0, 1, 2/), 6, .FALSE., 0.9315085)
 
 	! is nranks respected?
-    call assert_ndcg((/3, 2, 3, 0/), 4, .FALSE., 0.9491769D0)
-    call assert_ndcg((/3, 2, 3/), 4, .FALSE., 0.9491769D0)
+    call assert_ndcg((/3, 2, 3, 0/), 4, .FALSE., 0.9491769)
+    call assert_ndcg((/3, 2, 3/), 4, .FALSE., 0.9491769)
 
 end program test_ndcg

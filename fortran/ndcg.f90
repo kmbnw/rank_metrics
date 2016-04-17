@@ -25,9 +25,9 @@ contains
     ! @return: Log base 2 of input array.
     pure function log2(x)
         ! I am mildly surprised Fortran does not have this
-        double precision, intent(in), dimension(:) :: x
-        double precision, dimension(size(x)) :: log2
-        log2 = log(x) / log(2.0D0)
+        real, intent(in), dimension(:) :: x
+        real, dimension(size(x)) :: log2
+        log2 = log(x) / log(2.0)
     end function
 
     pure function pad(A, initval, len)
@@ -64,7 +64,7 @@ contains
     !    @param relevance: Graded and ordered relevances of the results.
     !    @param alternate: True to use the alternate scoring (intended to
     !    place more emphasis on relevant results).
-    pure double precision function rank_dcg(relevance, alternate)
+    pure real function rank_dcg(relevance, alternate)
         integer, intent(in), dimension(:) :: relevance
         logical, intent(in) :: alternate
         double precision, dimension(size(relevance)) :: log2i
@@ -83,12 +83,12 @@ contains
             ! from wikipedia: "An alternative formulation of
             ! DCG[5] places stronger emphasis on retrieving relevant documents"
 
-            log2i = log2((/ (i, i=1, p) /) + 1.0D0)
-            rank_dcg = sum(((2 ** (1.0D0 * relevance)) - 1.0) / log2i)
+            log2i = log2((/ (i, i=1, p) /) + 1.0)
+            rank_dcg = sum(((2 ** (1.0 * relevance)) - 1.0) / log2i)
         else
             ! slightly different than wikipedia so I don't have to declare
             ! two arrays; this one only uses elements 2 onward
-            log2i = log2((/ (i, i=1, p) /) * 1.0D0)
+            log2i = log2((/ (i, i=1, p) /) * 1.0)
             rank_dcg = relevance(1) + sum(relevance(2:) / log2i(2:))
         end if
     end function rank_dcg
@@ -98,7 +98,7 @@ contains
     ! @param relevance: Graded and ordered relevances of the results.
     ! @param alternate: True to use the alternate scoring (intended to
     ! place more emphasis on relevant results).
-    double precision function rank_idcg(relevance, alternate)
+    real function rank_idcg(relevance, alternate)
         integer, intent(in), dimension(:) :: relevance
         logical, intent(in) :: alternate
         integer, dimension(size(relevance)) :: rel
@@ -124,12 +124,12 @@ contains
     ! than nranks
     ! @param alternate: True to use the alternate scoring (intended to
     ! place more emphasis on relevant results).
-    double precision function rank_ndcg(relevance, nranks, alternate)
+    real function rank_ndcg(relevance, nranks, alternate)
           integer, intent(in), dimension(:) :: relevance
           logical, intent(in) :: alternate
           integer, intent(in) :: nranks
           integer, dimension(nranks) :: rel
-          double precision :: ideal_dcg
+          real :: ideal_dcg
 
           rank_ndcg = 0.0
 
