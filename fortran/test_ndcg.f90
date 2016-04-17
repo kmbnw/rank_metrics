@@ -14,6 +14,7 @@
 
 module ndcg_test
 	use ranking_ndcg
+	implicit none
 contains
 	subroutine assert_almost_equal_r8(expected, actual, name)
 		real, intent(in) :: expected, actual
@@ -85,6 +86,7 @@ contains
 		integer, intent(in), dimension(:) :: x
 		real, intent(in) :: expected
 		integer, dimension(size(x)) :: xcopy
+		integer :: nranks
 		real :: actual
 		logical :: alternate
 
